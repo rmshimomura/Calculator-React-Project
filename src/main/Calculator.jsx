@@ -39,25 +39,27 @@ export default class Calculator extends Component {
 
         if (this.state.currentPositionOnValues === 0) {
 
-            this.setState({ operation: operation, currentPositionOnValues: 1, clearDisplay: true, previousOperation: operation})
+            this.setState({ operation: operation, currentPositionOnValues: 1, clearDisplay: true, previousOperation: operation })
 
-        } else if(this.state.previousOperation !== null && this.state.values[1] === null && (operation === '+' || operation === '-' || operation === '*' || operation === '/')) {
+        } else if (this.state.previousOperation !== null && this.state.values[1] === null && (operation === '+' || operation === '-' || operation === '*' || operation === '/')) {
 
-            this.setState({ operation: operation, previousOperation: operation})
+            this.setState({ operation: operation, previousOperation: operation })
 
         } else {
 
             let originalValue = this.state.originalValue
 
-            if(this.state.values[1] !== null) {
+            if (this.state.values[1] !== null) {
+
                 originalValue = this.state.values[1]
+                
             }
 
             const equals = operation === '='
 
             let currentOperation = null;
 
-            if(this.state.operation) {
+            if (this.state.operation) {
 
                 currentOperation = this.state.operation
 
@@ -73,7 +75,7 @@ export default class Calculator extends Component {
 
             const values = [...this.state.values]
 
-            if(values[1] === null) this.previousOperation = operation
+            if (values[1] === null) this.previousOperation = operation
 
             switch (currentOperation) {
 
