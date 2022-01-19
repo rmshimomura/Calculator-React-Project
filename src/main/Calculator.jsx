@@ -10,7 +10,7 @@ const initialState = {
     clearDisplay: false,
     previousOperation: null,
     operation: null,
-    values: [0, 0],
+    values: [null, null],
     currentPositionOnValues: 0,
     originalValue: 0
 
@@ -37,20 +37,43 @@ export default class Calculator extends Component {
 
     setOperation(operation) {
 
-        if (this.state.currentPositionOnValues === 0 && this.state.previousOperation === null) {
+        if (this.state.currentPositionOnValues === 0) {
 
-            this.setState({ operation: operation, currentPositionOnValues: 1, clearDisplay: true })
+            this.setState({ operation: operation, currentPositionOnValues: 1, clearDisplay: true, previousOperation: operation})
+
+        } else if(this.state.previousOperation !== null && this.state.values[1] === null && (operation === '+' || operation === '-' || operation === '*' || operation === '/')) {
+
+            this.setState({ operation: operation, previousOperation: operation})
 
         } else {
-            const originalValue = this.state.values[0]
+
+            let originalValue = this.state.originalValue
+
+            if(this.state.values[1] !== null) {
+                originalValue = this.state.values[1]
+            }
+
             const equals = operation === '='
-            let currentOperation = this.state.operation === null ? '=' : this.state.operation
+
+            let currentOperation = null;
+
+            if(this.state.operation) {
+
+                currentOperation = this.state.operation
+
+            } else {
+
+                currentOperation = operation
+
+            }
 
             let previousOperation = this.state.previousOperation;
 
             if (currentOperation !== '=' && currentOperation !== null) previousOperation = currentOperation
 
             const values = [...this.state.values]
+
+            if(values[1] === null) this.previousOperation = operation
 
             switch (currentOperation) {
 
@@ -71,7 +94,7 @@ export default class Calculator extends Component {
                     break
 
                 case '=':
-                    if (this.state.values[1] === 0)
+                    if (this.state.values[1] === null)
                         this.repeatOperation(values, this.state.originalValue, this.state.previousOperation)
                     break
 
@@ -86,7 +109,7 @@ export default class Calculator extends Component {
                 return
             }
 
-            values[1] = 0
+            values[1] = null
 
             this.setState(
 
