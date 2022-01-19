@@ -10,9 +10,9 @@ const buttonFunction = props => {
 
     return (
 
-        <button 
-        
-            onClick={event => props.click && props.click(props.label)}    
+        <button
+
+            onClick={event => props.click && props.click(props.label)}
             className={classes}>
             {props.label}
 

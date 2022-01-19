@@ -13,7 +13,7 @@ const initialState = {
     values: [0, 0],
     currentPositionOnValues: 0,
     originalValue: 0
-    
+
 }
 
 export default class Calculator extends Component {
@@ -37,9 +37,9 @@ export default class Calculator extends Component {
 
     setOperation(operation) {
 
-        if(this.state.currentPositionOnValues === 0 && this.state.previousOperation === null) {
-            
-            this.setState( { operation: operation, currentPositionOnValues: 1, clearDisplay: true} )
+        if (this.state.currentPositionOnValues === 0 && this.state.previousOperation === null) {
+
+            this.setState({ operation: operation, currentPositionOnValues: 1, clearDisplay: true })
 
         } else {
             const originalValue = this.state.values[0]
@@ -48,36 +48,36 @@ export default class Calculator extends Component {
 
             let previousOperation = this.state.previousOperation;
 
-            if(currentOperation !== '=' && currentOperation !== null) previousOperation = currentOperation
+            if (currentOperation !== '=' && currentOperation !== null) previousOperation = currentOperation
 
             const values = [...this.state.values]
 
-            switch(currentOperation) {
+            switch (currentOperation) {
 
                 case '+':
                     values[0] += values[1]
-                break
+                    break
 
                 case '-':
                     values[0] -= values[1]
-                break
+                    break
 
                 case '*':
                     values[0] *= values[1]
-                break
+                    break
 
                 case '/':
                     values[0] /= values[1]
-                break
+                    break
 
                 case '=':
-                    if(this.state.values[1] === 0)
+                    if (this.state.values[1] === 0)
                         this.repeatOperation(values, this.state.originalValue, this.state.previousOperation)
-                break
+                    break
 
                 default:
-                
-                break
+
+                    break
 
             }
 
@@ -88,17 +88,17 @@ export default class Calculator extends Component {
 
             values[1] = 0
 
-            this.setState( 
+            this.setState(
 
                 {
                     displayValue: values[0],
                     operation: equals ? null : operation,
                     currentPositionOnValues: values[0] !== 0 ? 1 : 0,
-                    clearDisplay : !equals,
+                    clearDisplay: !equals,
                     values,
                     previousOperation,
-                    originalValue 
-                } 
+                    originalValue
+                }
 
             )
 
@@ -108,23 +108,23 @@ export default class Calculator extends Component {
 
     repeatOperation(values, originalValue, previousOperation) {
 
-        switch(previousOperation) {
+        switch (previousOperation) {
 
             case '+':
                 values[0] += originalValue
-            break
+                break
 
             case '-':
                 values[0] -= originalValue
-            break
+                break
 
             case '*':
                 values[0] *= originalValue
-            break
+                break
 
             case '/':
                 values[0] /= originalValue
-            break
+                break
 
             default:
                 return
@@ -135,8 +135,8 @@ export default class Calculator extends Component {
 
     addDigit(digit) {
 
-        if (digit === "." && this.state.displayValue.includes('.')) { 
-            
+        if (digit === "." && this.state.displayValue.includes('.')) {
+
             // Prevent double decimals
             return
 
