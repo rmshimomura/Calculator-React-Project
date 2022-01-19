@@ -8,9 +8,11 @@ const initialState = {
 
     displayValue: '0',
     clearDisplay: false,
+    previousOperation: null,
     operation: null,
     values: [0, 0],
-    currentValue: 0
+    currentPositionOnValues: 0,
+    originalValue: 0
     
 }
 
@@ -35,19 +37,20 @@ export default class Calculator extends Component {
 
     setOperation(operation) {
 
-        if(this.state.current === 0) {
+        if(this.state.currentPositionOnValues === 0 && this.state.previousOperation === null) {
             
-            this.setState( { operation: operation, current: 1, clearDisplay: true } )
+            this.setState( { operation: operation, currentPositionOnValues: 1, clearDisplay: true} )
 
         } else {
-
+            const originalValue = this.state.values[0]
             const equals = operation === '='
-            const currentOperation = this.state.operation
+            let currentOperation = this.state.operation === null ? '=' : this.state.operation
 
-            console.log(currentOperation)
+            let previousOperation = this.state.previousOperation;
+
+            if(currentOperation !== '=' && currentOperation !== null) previousOperation = currentOperation
 
             const values = [...this.state.values]
-
 
             switch(currentOperation) {
 
@@ -68,18 +71,63 @@ export default class Calculator extends Component {
                 break
 
                 case '=':
-
+                    if(this.state.values[1] === 0)
+                        this.repeatOperation(values, this.state.originalValue, this.state.previousOperation)
                 break
 
                 default:
-                    console.log('Impossible operation ' + currentOperation)
+                
                 break
 
             }
 
+            if (isNaN(values[0]) || !isFinite(values[0])) {
+                this.clearMemory()
+                return
+            }
+
             values[1] = 0
 
-            this.setState( { displayValue: values[0], operation: equals ? null : operation, current: equals ? 0 : 1, clearDisplay : !equals, values } )
+            this.setState( 
+
+                {
+                    displayValue: values[0],
+                    operation: equals ? null : operation,
+                    currentPositionOnValues: values[0] !== 0 ? 1 : 0,
+                    clearDisplay : !equals,
+                    values,
+                    previousOperation,
+                    originalValue 
+                } 
+
+            )
+
+        }
+
+    }
+
+    repeatOperation(values, originalValue, previousOperation) {
+
+        switch(previousOperation) {
+
+            case '+':
+                values[0] += originalValue
+            break
+
+            case '-':
+                values[0] -= originalValue
+            break
+
+            case '*':
+                values[0] *= originalValue
+            break
+
+            case '/':
+                values[0] /= originalValue
+            break
+
+            default:
+                return
 
         }
 
@@ -98,7 +146,7 @@ export default class Calculator extends Component {
 
         /* 
             Boolean value saying if it's necessary to clear the display
-            True if the current display value is 0 or the variable this.state.clearDisplay is set to true
+            True if the currentValue display value is 0 or the variable this.state.clearDisplay is set to true
         */
 
         const currentValue = clearDisplay ? '' : this.state.displayValue
@@ -113,7 +161,7 @@ export default class Calculator extends Component {
 
         if (digit !== '.') {
 
-            const i = this.state.current
+            const i = this.state.currentPositionOnValues
             const newValue = parseFloat(displayValue)
             const values = [...this.state.values]
             values[i] = newValue
